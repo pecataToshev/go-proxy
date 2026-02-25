@@ -1,7 +1,7 @@
 package health
 
 const (
-	Version   = "dev"
+	Commit    = "dev"
 	BuildTime = "unset"
 	Source    = "local"
 )

@@ -77,7 +77,7 @@ You can use the official pre-built image from GitHub Container Registry. You onl
 ```bash
 docker run --rm -p 8080:80 \
   -v ./your-config.yaml:/config.yaml \
-  ghcr.io/pecatatoshev/go-proxy:sha-d0bca50
+  ghcr.io/pecatatoshev/go-proxy:latest
 ```
 
 *Note: The image is configured to look for the configuration at `/config.yaml` by default.*
