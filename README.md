@@ -59,7 +59,6 @@ The proxy requires a path to the configuration file as the first positional argu
 ```bash
 go run main.go config.yaml
 ```
-
 ### Build and Run with Docker
 
 ```bash
@@ -70,6 +69,18 @@ docker run --rm -p 8080:80 --memory=10m \
   -v ./config.yaml:/config.yaml \
   proxy:go /config.yaml
 ```
+
+### Using Pre-built Docker Image
+
+You can use the official pre-built image from GitHub Container Registry. You only need to provide your `config.yaml` file via a volume mount.
+
+```bash
+docker run --rm -p 8080:80 \
+  -v ./your-config.yaml:/config.yaml \
+  ghcr.io/pecatatoshev/go-proxy:sha-d0bca50
+```
+
+*Note: The image is configured to look for the configuration at `/config.yaml` by default.*
 
 ## System Tuning & Environment Variables
 
