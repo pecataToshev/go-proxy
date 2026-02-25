@@ -7,6 +7,10 @@
 *.dll
 *.so
 *.dylib
+*.bin
+/bin
+/build
+/dist
 
 # Test binary, built with `go test -c`
 *.test
@@ -28,5 +32,10 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
+
+# Other
+.DS_Store
+config.yaml
+config.yml

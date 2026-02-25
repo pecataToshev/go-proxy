@@ -1,0 +1,71 @@
+# Proxy Configuration Example
+# This file documents all available configuration options for the reverse proxy.
+
+version: 1.0.0
+
+# The address the server should listen on. 
+# Defaults to ":80" if not specified.
+listen: ":80"
+
+# Proxy-specific settings
+proxy:
+  # The maximum number of concurrent in-flight proxy requests.
+  # This bounds the memory usage of the proxy.
+  # Defaults to 100.
+  max_concurrent_requests: 100
+
+# CORS (Cross-Origin Resource Sharing) configuration
+cors:
+  # List of allowed origins.
+  # - "*" allows all origins.
+  # - "[http://localhost:3000, https://app.example.com]" specific origins.
+  # Defaults to an empty list (CORS disabled).
+  allowed_origins:
+    - "http://localhost:3000"
+    - "https://example.com"
+
+# HTTP Transport settings for upstream connections
+transport:
+  # Timeout for establishing a new TCP connection (in seconds).
+  # Defaults to 10.
+  dial_timeout: 10
+
+  # Keep-alive period for the connection (in seconds).
+  # Defaults to 30.
+  dial_keep_alive: 30
+
+  # Maximum number of total idle connections across all hosts.
+  # Defaults to 10.
+  max_idle_conns: 10
+
+  # Maximum number of idle connections to keep per host.
+  # Defaults to 2.
+  max_idle_conns_per_host: 2
+
+  # Maximum number of total connections (idle or active) per host.
+  # Defaults to 20.
+  max_conns_per_host: 20
+
+  # Time after which an idle connection will be closed (in seconds).
+  # Defaults to 30.
+  idle_conn_timeout: 30
+
+  # Timeout for receiving the response headers from upstream (in seconds).
+  # Defaults to 30.
+  response_header_timeout: 30
+
+  # Buffer size for reading from upstream connection (in bytes).
+  # Defaults to 4096 (4 KB).
+  read_buffer_size: 4096
+
+  # Buffer size for writing to upstream connection (in bytes).
+  # Defaults to 4096 (4 KB).
+  write_buffer_size: 4096
+
+# Routing rules
+# Each route consists of a path prefix and a target URL.
+routes:
+  - path: "/ph/"
+    target: "https://eu.i.posthog.com/"
+  - path: "/ph-wh/"
+    target: "https://webhooks.eu.posthog.com/"
