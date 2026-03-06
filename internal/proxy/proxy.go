@@ -153,6 +153,20 @@ func Handler(prefix string, target *url.URL) http.HandlerFunc {
 			out.Header[k] = vv
 		}
 		DelHop(out.Header)
+
+		// Preserve original public host for upstream apps behind the proxy
+		if r.Host != "" && out.Header.Get("X-Forwarded-Host") == "" {
+			out.Header.Set("X-Forwarded-Host", r.Host)
+		}
+		// Preserve original protocol (CDN/TLS terminator sets this; fall back to http)
+		if out.Header.Get("X-Forwarded-Proto") == "" {
+			if r.TLS != nil {
+				out.Header.Set("X-Forwarded-Proto", "https")
+			} else {
+				out.Header.Set("X-Forwarded-Proto", "http")
+			}
+		}
+
 		out.Host = target.Host
 		out.Header.Set("Host", target.Host)
 
