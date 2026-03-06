@@ -3,11 +3,11 @@ package proxy
 import (
 	"crypto/tls"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"proxy/config"
+	"proxy/internal/logger"
 	"strings"
 	"sync"
 	"time"
@@ -50,12 +50,12 @@ func Init(cfg *config.Config) {
 		}
 
 		if isAllAllowed {
-			log.Println("CORS: allowing all origins (*)")
+			logger.Info("CORS: allowing all origins", "origins", "*")
 		} else {
-			log.Printf("CORS: allowing origins: %v", allowedOrigins)
+			logger.Info("CORS: allowing origins", "origins", allowedOrigins)
 		}
 	} else {
-		log.Println("CORS: disabled (no allowed_origins in config)")
+		logger.Info("CORS: disabled", "reason", "no allowed_origins in config")
 	}
 
 	transport = &http.Transport{
@@ -139,6 +139,7 @@ func Handler(prefix string, target *url.URL) http.HandlerFunc {
 			Path:     JoinPath(target.Path, tail),
 			RawQuery: r.URL.RawQuery,
 		}
+		logger.Debug("proxying request", "method", r.Method, "url", r.URL.String(), "target", u.String())
 
 		out, err := http.NewRequestWithContext(
 			r.Context(), r.Method, u.String(), r.Body)

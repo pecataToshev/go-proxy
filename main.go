@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,6 +12,7 @@ import (
 
 	"proxy/config"
 	"proxy/health"
+	"proxy/internal/logger"
 	"proxy/internal/proxy"
 	"proxy/internal/sys"
 )
@@ -25,9 +25,13 @@ func main() {
 	}
 	cfgPath := os.Args[1]
 
+	debug := os.Getenv("DEBUG") == "true"
+	structured := os.Getenv("LOG_FORMAT") == "json"
+	logger.Init(debug, structured)
+
 	cfg, err := config.LoadConfig(cfgPath)
 	if err != nil {
-		log.Fatalf("config: %v", err)
+		logger.Fatal("failed to load config", "error", err)
 	}
 
 	// -- System tuning -------------------------------------------------------
@@ -45,10 +49,10 @@ func main() {
 	for _, r := range cfg.Routes {
 		t, err := url.Parse(r.Target)
 		if err != nil {
-			log.Fatalf("bad target %q: %v", r.Target, err)
+			logger.Fatal("bad target", "target", r.Target, "error", err)
 		}
 		mux.HandleFunc(r.Path, proxy.Handler(r.Path, t))
-		log.Printf("route: %s -> %s", r.Path, r.Target)
+		logger.Info("route configured", "path", r.Path, "target", r.Target)
 	}
 	mux.HandleFunc("/health", health.HandleHealth)
 
@@ -68,15 +72,15 @@ func main() {
 	defer stop()
 	go func() {
 		<-ctx.Done()
-		log.Println("shutting down…")
+		logger.Info("shutting down...")
 		c, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		srv.Shutdown(c)
 	}()
 
 	// -- Start ---------------------------------------------------------------
-	log.Printf("listening on %s", cfg.Listen)
+	logger.Info("listening", "addr", cfg.Listen)
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-		log.Fatalf("server: %v", err)
+		logger.Fatal("server error", "error", err)
 	}
 }
