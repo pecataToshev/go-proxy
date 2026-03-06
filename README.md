@@ -89,6 +89,8 @@ The proxy includes built-in optimizations for low-memory environments. These are
 - **`GOMAXPROCS`**: Defaults to `2` (limits OS threads to save memory).
 - **`GOGC`**: Defaults to `20` (aggressive garbage collection).
 - **`GOMEMLIMIT`**: Defaults to `8MiB` (soft memory ceiling).
+- **`DEBUG`**: Defaults to `false` (set to `true` to enable verbose request logging).
+- **`LOG_FORMAT`**: Defaults to `text` (set to `json` to output structured JSON logs).
 
 To override these, simply set the environment variables when running:
 
